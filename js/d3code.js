@@ -1,10 +1,69 @@
 d3.json("data/worldPop.json",function(data){
 	blob = data;
 
+	// Line chart of oldest and youngest age groups
+
+	lineBlob = blob.filter(function(d){return d.ageGroup == "age_0_19" || d.ageGroup == "age_60_plus"})
+	var lineMargin = {top: 10, right: 50, bottom: 30, left: 40},
+		lineWidth = 400 - lineMargin.right - lineMargin.left,
+		lineHeight = 250 - lineMargin.top - lineMargin.bottom;
+
+	lineScaleX = d3.scale.linear()
+		.domain([
+			d3.min(lineBlob, function(d,i){return d.year}),
+			d3.max(lineBlob, function(d,i){return d.year})
+			])
+		.range([0, lineWidth]);
+
+	lineScaleY = d3.scale.linear()
+		.domain([0,0.5])
+		.range([lineHeight,0])
+
+	lineAxisX = d3.svg.axis()
+		.scale(lineScaleX)
+		.orient("bottom")
+		.ticks(6)
+		.tickFormat(d3.format(""))
+
+	lineAxisY = d3.svg.axis()
+		.scale(lineScaleY)
+		.orient("left")
+		.tickFormat(d3.format("%"))
+
+	lineHelper = d3.svg.line()
+		.x(function(d,i){return lineScaleX(d.year)})
+		.y(function(d,i){return lineScaleY(d.percentage)})
+
+	lineSVG = d3.select("#line-chart").append("svg")
+		.attr("width", lineWidth + lineMargin.left + lineMargin.right)
+		.attr("height", lineHeight + lineMargin.top + lineMargin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + lineMargin.left + "," + lineMargin.top + ")");
+
+	lineSVG.append("g")
+		.call(lineAxisY)
+		.attr("class","axis")
+
+	lineSVG.append("g")
+		.call(lineAxisX)
+		.attr("transform", "translate(0," + lineHeight + ")")
+		.attr("class","x axis")
+
+	lineSVG.append("path")
+		.datum(lineBlob.filter(function(d,i){return d.ageGroup == "age_60_plus"}))
+		.attr("class","line")
+		.attr("d", lineHelper)
+
+	lineSVG.append("path")
+		.datum(lineBlob.filter(function(d,i){return d.ageGroup == "age_0_19"}))
+		.attr("class","lineYoung")
+		.attr("d", lineHelper)
+	
+
 	// Bar chart worldwide population composition
 
 	// First step is to filter out for only the decadal years. We can do this by using the remainder operator - %. If you divide the year by 10 and the remainder is 0, then you know you have a decade.
-	barBlob = data.filter(function(d){ return d.year%10 == 0})
+	barBlob = blob.filter(function(d){ return d.year%10 == 0})
 
 	// Then, take barBlob and create a nested version of it where the years are used as a hierarchical key. This will allow you to easily 
 	barNest = d3.nest().key(function(d){return d.year}).entries(barBlob)
@@ -12,9 +71,9 @@ d3.json("data/worldPop.json",function(data){
 	// Start with 1950 selected
 	selected = "1950";
 
-	var margin = {top: 30, right: 20, bottom: 0, left: 0},
-    	width = 400 - margin.left - margin.right,
-    	height = 250 - margin.top - margin.bottom,
+	var barMargin = {top: 30, right: 20, bottom: 0, left: 0},
+    	width = 400 - barMargin.left - barMargin.right,
+    	height = 250 - barMargin.top - barMargin.bottom,
 		font = 13,
 		chartmargin = 100,
 		barHeight = (height-4)/4;
@@ -37,10 +96,10 @@ d3.json("data/worldPop.json",function(data){
 
 
 	barSVG = d3.select("#bar-chart").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
+	    .attr("width", width + barMargin.left + barMargin.right)
+	    .attr("height", height + barMargin.top + barMargin.bottom)
 	  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	    .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 		
 	barSVG.append("g")
 		.attr("class","x axis")

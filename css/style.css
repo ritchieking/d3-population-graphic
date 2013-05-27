@@ -13,3 +13,14 @@
 .x.axis path {
   display: none;
 }
+
+.line {
+  	fill: none;
+  	stroke: magenta;
+  	stroke-width: 5px;
+}
+.lineYoung {
+	fill: none;
+  	stroke: darkmagenta;
+  	stroke-width: 5px;
+}
