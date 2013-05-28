@@ -47,7 +47,7 @@ d3.json("data/worldPop.json",function(data){
 	lineSVG.append("g")
 		.call(lineAxisX)
 		.attr("transform", "translate(0," + lineHeight + ")")
-		.attr("class","x axis")
+		.attr("class","axis")
 
 	lineSVG.append("path")
 		.datum(lineBlob.filter(function(d,i){return d.ageGroup == "age_60_plus"}))
