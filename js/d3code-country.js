@@ -60,26 +60,52 @@ d3.json("data/countryPop.json",function(data){
 		.attr("transform", "translate(" + (-countryScaleX.rangeBand()/2) + ",0)")
 		.attr("class","x axis no-ticks")
 
-	label = countrySVG.append("text")
-		.attr("class","selected-line-text")
-		.attr("x",2*countryScaleX.rangeBand()+20)
-		.attr("y",countryHeight/3)
-		.text("")
+	
+
+	countrySVG.append("text")
+		.attr("class","world-line-text")
+		.attr("x",20)
+		.attr("y",countryHeight/2-40)
+		.text("World")
 
 	for (var i = 0; i <= countryNest.length - 1; i++) {
 		temp = countrySVG.append("path")
 			.datum(countryNest[i].values)
-			.attr("class","country-line")
+			.attr("class",function(d){
+				if (d[0].country == "world") {
+					console.log(d)
+					return "world-line"
+				}
+				else {
+					return "country-line"
+				}
+			})
 			.attr("d",countryLineHelper)
 			.on("mouseover", function(d){
-				d3.select(this).attr("class","selected-line")
-				label.text(d[0].country)
-
+				if (d[0].country != "world") {
+					d3.select(this).attr("class","selected-line")
+					label.text(d[0].country).attr("y",function(){
+							if (d[1].percentage < d[2].percentage) {
+								return countryScaleY(d[1].percentage)-40
+							}
+							else{
+								return countryScaleY(d[1].percentage)-15
+							}
+							
+						})
+				}
 			})
 			.on("mouseout",function(d){
-				d3.select(this).attr("class","country-line")
-				label.text("")
+				if (d[0].country != "world") {
+					d3.select(this).attr("class","country-line")
+					label.text("")
+				}
 			})
 	};
+
+	label = countrySVG.append("text")
+		.attr("class","selected-line-text")
+		.attr("x",countryScaleX.rangeBand()+20)
+		.text("")
 	
 })

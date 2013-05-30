@@ -49,7 +49,7 @@
 }
 .lineYoung {
 	fill: none;
-  	stroke: darkmagenta;
+  	stroke: #652C90;
   	stroke-width: 5px;
 }
 .country-line{
@@ -60,12 +60,25 @@
 }
 .selected-line{
 	stroke-width:2px;
-	stroke:darkmagenta;
+	stroke:#652C90;
 	fill:none;
 }
 .selected-line-text{
 	font-size:15px;
 	font-weight:bold;
 	font-family:arial;
-	fill:darkmagenta;
+	fill:#652C90;
+}
+
+.world-line{
+	fill:none;
+	stroke-width:2px;
+	stroke:black;
+}
+
+.world-line-text{
+	font-size:15px;
+	font-weight:bold;
+	font-family:arial;
+	fill:black;
 }
